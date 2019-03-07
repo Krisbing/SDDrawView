@@ -27,6 +27,7 @@
 @property(nonatomic,strong)UIButton *redButton;
 @property(nonatomic,strong)UIButton *greenButton;
 @property(nonatomic,strong)UIButton *orangeButton;
+@property(nonatomic,strong)UIButton *eraseButton;
 
 @end
 
@@ -46,6 +47,7 @@
     [self.view addSubview:self.redButton];
     [self.view addSubview:self.greenButton];
     [self.view addSubview:self.orangeButton];
+    [self.view addSubview:self.eraseButton];
     self.view.backgroundColor = [UIColor whiteColor];
     
 }
@@ -85,7 +87,7 @@
 - (UIButton *)lineButton{
     
     if(_lineButton == nil){
-        _lineButton = [[UIButton alloc] initWithFrame:CGRectMake(0, StatusHeight + NavigationBarHeight, KmainWidth/4.0, 40)];
+        _lineButton = [[UIButton alloc] initWithFrame:CGRectMake(0, StatusHeight + NavigationBarHeight, KmainWidth/5.0, 40)];
         _lineButton.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         _lineButton.selected = YES;
         [_lineButton setTitle:@" 直线" forState:UIControlStateNormal];
@@ -100,7 +102,7 @@
 - (UIButton *)squareButton{
     
     if(_squareButton == nil){
-        _squareButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/4.0, StatusHeight + NavigationBarHeight, KmainWidth/4.0, 40)];
+        _squareButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/5.0, StatusHeight + NavigationBarHeight, KmainWidth/5.0, 40)];
         _squareButton.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         [_squareButton setTitle:@" 矩形" forState:UIControlStateNormal];
         [_squareButton setImage:[UIImage imageNamed:@"矩形"] forState:UIControlStateNormal];
@@ -115,7 +117,7 @@
 - (UIButton *)circleButton{
     
     if(_circleButton == nil){
-        _circleButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/2.0, StatusHeight + NavigationBarHeight, KmainWidth/4.0, 40)];
+        _circleButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/5.0*2, StatusHeight + NavigationBarHeight, KmainWidth/5.0, 40)];
         _circleButton.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         [_circleButton setTitle:@" 圆形" forState:UIControlStateNormal];
         [_circleButton setImage:[UIImage imageNamed:@"圆形"] forState:UIControlStateNormal];
@@ -130,7 +132,7 @@
 - (UIButton *)arrowButton{
     
     if(_arrowButton == nil){
-        _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/4.0*3, StatusHeight + NavigationBarHeight, KmainWidth/4.0, 40)];
+        _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/5.0*3, StatusHeight + NavigationBarHeight, KmainWidth/5.0, 40)];
         _arrowButton.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         [_arrowButton setTitle:@" 箭头" forState:UIControlStateNormal];
         [_arrowButton setImage:[UIImage imageNamed:@"箭头"] forState:UIControlStateNormal];
@@ -140,7 +142,18 @@
     }
     return _arrowButton;
 }
-
+- (UIButton *)eraseButton {
+    if (!_eraseButton) {
+        _eraseButton = [[UIButton alloc] initWithFrame:CGRectMake(KmainWidth/5.0*4, StatusHeight + NavigationBarHeight, KmainWidth/5.0, 40)];
+        _eraseButton.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
+        [_eraseButton setTitle:@"橡皮" forState:UIControlStateNormal];
+        [_eraseButton setImage:[UIImage imageNamed:@"箭头"] forState:UIControlStateNormal];
+        [_eraseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+        [_eraseButton setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+        [_eraseButton addTarget:self action:@selector(selectLineDrawType:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _eraseButton;
+}
 
 - (SDDrawView *)drawView{
     
@@ -241,16 +254,20 @@
     _squareButton.selected = NO;
     _circleButton.selected = NO;
     _arrowButton.selected = NO;
+    _eraseButton.selected = NO;
     sender.selected = YES;
-    
+    _drawView.isErase = NO;
     if([sender isEqual: _lineButton]){
         _drawView.drawStyle = DrawStyleLine;
     }else if([sender isEqual: _squareButton]){
         _drawView.drawStyle = DrawStyleSquare;
     }else if([sender isEqual: _circleButton]){
         _drawView.drawStyle = DrawStyleCircle;
-    }else{
+    }else if([sender isEqual:_arrowButton]){
         _drawView.drawStyle = DrawStyleArrow;
+    } else {
+        _drawView.drawStyle = DrawStyleLine;
+        _drawView.isErase = YES;
     }
     
 }

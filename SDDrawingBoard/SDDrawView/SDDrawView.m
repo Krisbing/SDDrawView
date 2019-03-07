@@ -47,6 +47,7 @@
     //当手指按下的时候就创建一条路径
     SDBezierPath *path=[SDBezierPath bezierPath];
     path.drawStyle = _drawStyle;
+    path.isErase = _isErase;
     //设置画笔宽度
     if(_lineWidth<=0){
         [path setLineWidth:5];
@@ -128,8 +129,13 @@
         
         switch (path.drawStyle) {
             case DrawStyleLine: {
-                //设置颜色
-                [path.lineColor set];
+                if (path.isErase) {
+                    [self.backgroundColor setStroke];
+                    [path strokeWithBlendMode:kCGBlendModeDestinationIn alpha:1.0];
+                } else {
+                    //设置颜色
+                    [path.lineColor set];
+                }
                 // 设置连接处的样式
                 [path setLineJoinStyle:kCGLineJoinRound];
                 // 设置头尾的样式
